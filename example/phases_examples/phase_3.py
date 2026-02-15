@@ -61,7 +61,6 @@ def draw_board(stdscr):
                   curses.color_pair(1))
     stdscr.refresh()
 
-
 def move_player(key):
     x = game_data['player']['x']
     y = game_data['player']['y']
@@ -89,7 +88,6 @@ def move_player(key):
     game_data['player']['y'] = new_y
     game_data['player']['score'] += 1
 
-
 def main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(True)
@@ -108,6 +106,5 @@ def main(stdscr):
 
             move_player(key)
             draw_board(stdscr)
-
 
 curses.wrapper(main)
