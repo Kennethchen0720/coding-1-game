@@ -24,3 +24,4 @@ Coins will fall by random from a set list of x positions, and will fall by a cer
 Each ten coins collected will speed up the time between each coin movement by 5%.
 If the coin and the basket is in the same x position, the coin will be caught and added to your score. If theyre not, the coin will be missed and you will lose 1 out of 3 lives.
 There will be bombs with a 1 in 10 chance of spawning. If you catch a bomb you lose all lives.
+Grid: 40 x 40 subject to change depending on Gameplay
