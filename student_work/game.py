@@ -6,12 +6,16 @@ game_data = {
     'height': 30,
     'player': {"x":0, "y":0, "score":0, "lives":1, "max_lives":1}
     'basket_pos':{"x":1,"y":1}
+        'collectibles': [
+        {"x": 5, "y": 20, "collected": False},
+    ]
 
 
     #Emoji
     'coins': "🪙"
     'bomb': "💣"
-    ''
+    'Basket': "👛"
+    'empty': "  "
 }
 
 def draw_board(screen):
