@@ -17,3 +17,7 @@ Major Game Elements:
 Coins Bombs Human/Player possibly a shield for immunity for 5 seconds 
 
 Gameplay Process:
+
+Coin Emoji: U+1FA99
+Bomb emoji: U+1F4A3
+Basket emoji: U+1F5D1
