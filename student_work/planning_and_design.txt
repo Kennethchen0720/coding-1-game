@@ -1,17 +1,19 @@
 Part I: Planning & Design (15 pts)
 
+Make a Basketcatcher game
+
 * Decide on a game idea and core goal
 * Game rules and player actions are written or sketched out
 * Main objects (player, obstacles, goals, enemies, etc.) are identified
 * Sketch a simple plan showing how the game will work step-by-step
 
 Game Idea:
-
+Make a Basketcatch 
 
 Game Rules:
-
+Colllect coins while avoiding the bombs and go as long as possible 
 
 Major Game Elements:
-
+Coins Bombs Human/Player possibly a shield for immunity for 5 seconds 
 
 Gameplay Process:
