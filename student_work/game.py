@@ -19,6 +19,7 @@ game_data = {
 }
 
 def draw_board(screen):
+    
     # Print the board and all game elements using curses
 
 
