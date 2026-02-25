@@ -6,7 +6,8 @@ game_data = {
     'height': 20,
     'player': {"x":0, "y":0, "score":0, "lives":3},
     'bomb_pos': {"x":1,"y":1},
-    'collectibles': {"x": 5, "y": 20, "collected": False},
+    'collectibles':[
+    {"x": 5, "y": 20, "collected": False}],
     #Emoji
     'coins': "\U0001FA99",
     'bomb': "\U0001F4A3",
@@ -14,14 +15,14 @@ game_data = {
     'empty': "  "
 }
 
-def draw_board(screen):
+def draw_board(stdscr):
     
     # Print the board and all game elements using curses
     curses.start_color()
     curses.use_default_colors()
     curses.init_pair(1, curses.COLOR_WHITE, -1)
 
-    screen.clear()
+    stdscr.clear()
     for y in range(game_data['height']):
         row = ""
         for x in range(game_data['width']):
@@ -36,10 +37,10 @@ def draw_board(screen):
                 row += game_data['coins']
             else:
                 row += game_data['empty']
-        screen.addstr(y, 0, row, curses.color_pair(1))
+        stdscr.addstr(y, 0, row, curses.color_pair(1))
 
-    screen.refresh()
-    screen.getkey()  # pause so player can see board
+    stdscr.refresh()
+    stdscr.getkey()  # pause so player can see board
 
 curses.wrapper(draw_board)
 
