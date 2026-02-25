@@ -4,16 +4,13 @@ import curses
 game_data = {
     'width': 10,
     'height': 20,
-    'player': {"x":0, "y":0, "score":0, "lives":3, "max_lives":3}
-    'bomb_pos':{"x":1,"y":1}
-    'collectibles': [
-        {"x": 5, "y": 20, "collected": False},
-    ]
-
+    'player': {"x":0, "y":0, "score":0, "lives":3},
+    'bomb_pos': {"x":1,"y":1},
+    'collectibles': {"x": 5, "y": 20, "collected": False},
     #Emoji
-    'coins': "🪙"
-    'bomb': "💣"
-    'Basket': "👛"
+    'coins': "🪙",
+    'bomb': "💣",
+    'Basket': "👛",
     'empty': "  "
 }
 
