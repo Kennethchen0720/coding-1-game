@@ -8,9 +8,9 @@ game_data = {
     'bomb_pos': {"x":1,"y":1},
     'collectibles': {"x": 5, "y": 20, "collected": False},
     #Emoji
-    'coins': "🪙",
-    'bomb': "💣",
-    'Basket': "👛",
+    'coins': "\U0001FA99",
+    'bomb': "\U0001F4A3",
+    'Basket': "\U0001F5D1",
     'empty': "  "
 }
 
