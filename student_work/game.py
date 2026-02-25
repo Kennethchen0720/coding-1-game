@@ -2,11 +2,11 @@
 import curses
 
 game_data = {
-    'width': 10,
-    'height': 20,
-    'player': {"x":0, "y":0, "score":0, "lives":3},
+    'width': 40,
+    'height': 40,
+    'player': {"x":5, "y":10, "score":0, "lives":3},
     'bomb_pos': {"x":1,"y":1},
-    'collectibles':[{"x": 5, "y": 20, "collected": False}],
+    'collectibles':[{"x": 10, "y": 5, "collected": False}],
     'coins': "\U0001FA99",
     'bomb': "\U0001F4A3",
     'Basket': "\U0001F5D1",
