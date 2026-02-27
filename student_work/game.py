@@ -1,5 +1,7 @@
 # Write your game here
 import curses
+import random 
+import time
 
 game_data = {
     'width': 12,
@@ -82,6 +84,9 @@ def draw_board(stdscr):
         pass
     stdscr.refresh()
 
+    
+
+
 def move_player(key):
     x = game_data['player']['x']
     y = game_data['player']['y']
@@ -119,6 +124,14 @@ def move_player(key):
     if bp.get('x') == new_x and bp.get('y') == new_y:
         game_data['player']['lives'] -= 1
 
+# def bomb_and_coin_fall():
+#     x = random.randint(0, game_data['width'] - 1)
+#     b_or_c = random.randint(0, 5)
+#     if b_or_c == 5:
+#         game_data['bomb_pos'] = {"x": x, "y": 20}
+#     else:
+#         game_data['collectibles'] = {"x": x, "y": 20, "collected": False}
+
 def main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(True)
@@ -137,7 +150,7 @@ def main(stdscr):
 
             move_player(key)
             draw_board(stdscr)
+            # bomb_and_coin_fall()
 
-if __name__ == '__main__':
-    curses.wrapper(main)
+curses.wrapper(main)
 # Good Luck!
