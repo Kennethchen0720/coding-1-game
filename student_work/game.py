@@ -153,4 +153,3 @@ def main(stdscr):
             # bomb_and_coin_fall()
 
 curses.wrapper(main)
-# Good Luck!
