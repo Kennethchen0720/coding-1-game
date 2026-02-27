@@ -96,7 +96,6 @@ def move_player(key):
 
     # Update position and increment score
     game_data['player']['x'] = new_x
-    game_data['player']['y'] = new_y
     game_data['player']['score'] += 1
 
 def main(stdscr):
