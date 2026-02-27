@@ -124,19 +124,20 @@ def move_player(key):
     if bp.get('x') == new_x and bp.get('y') == new_y:
         game_data['player']['lives'] -= 1
 
-# def bomb_and_coin_fall():
-#     x = random.randint(0, game_data['width'] - 1)
-#     b_or_c = random.randint(0, 5)
-#     if b_or_c == 5:
-#         game_data['bomb_pos'] = {"x": x, "y": 20}
-#     else:
-#         game_data['collectibles'] = {"x": x, "y": 20, "collected": False}
+def bomb_and_coin_fall():
+    x = random.randint(0, game_data['width'] - 1)
+    b_or_c = random.randint(0, 5)
+    if b_or_c == 5:
+        game_data['bomb_pos'] = {"x": x, "y": 20}
+    else:
+        game_data['collectibles'] = {"x": x, "y": 20, "collected": False}
 
 def main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(True)
 
     draw_board(stdscr)
+    current_time = 0
 
     while True:
         try:
@@ -150,6 +151,9 @@ def main(stdscr):
 
             move_player(key)
             draw_board(stdscr)
-            # bomb_and_coin_fall()
+        
+        if current_time % 3 == 0:
+            bomb_and_coin_fall()
+        current_time += 1
 
 curses.wrapper(main)
