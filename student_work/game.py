@@ -2,8 +2,8 @@
 import curses
 
 game_data = {
-    'width': 40,
-    'height': 40,
+    'width': 12,
+    'height': 20,
     'player': {"x":5, "y":10, "score":0, "lives":3},
     'bomb_pos': {"x":1,"y":1},
     'collectibles':[{"x": 10, "y": 5, "collected": False}],
@@ -76,7 +76,7 @@ def draw_board(stdscr):
         pass
     try:
         stdscr.addnstr(info_y + 1, 0,
-                       "Move with A/D (or W/S), Q to quit",
+                       "Move with A/D, Q to quit",
                        max_x, color_attr)
     except curses.error:
         pass
@@ -92,10 +92,6 @@ def move_player(key):
         new_x -= 1
     elif key == "d":
         new_x += 1
-    elif key == "w":
-        new_y -= 1
-    elif key == "s":
-        new_y += 1
     else:
         return
 
