@@ -127,9 +127,6 @@ def main(stdscr):
                 break
             move_player(key)
 
-            move_eagle()
-            spawn_leaf()
-
             draw_board(stdscr)
             time.sleep(0.2)
 

@@ -65,6 +65,12 @@ def draw_board(stdscr):
                 # if drawing still fails (e.g. cell width mismatch), just skip it
                 pass
 
+    stdscr.addstr(game_data['width'] + 1, 0,
+                  f"Coins Collected: {game_data['player']['score']}",
+                  curses.color_pair(1))
+    stdscr.addstr(game_data['width'] + 2, 0,
+                  "Move with A/D, Q to quit",
+                  curses.color_pair(1))
     stdscr.refresh()
     stdscr.getkey()  # pause so player can see board
 
