@@ -51,13 +51,21 @@ def draw_board(stdscr):
             if x == game_data['player']['x'] and y == game_data['player']['y']:
                 row += game_data['Basket']
             # Bomb
-            elif x == game_data['bomb_pos']['x'] and y == game_data['bomb_pos']['y']:
+            # elif x == game_data['bomb_pos']['x'] and y == game_data['bomb_pos']['y']:
+            #     row += game_data['bomb']
+            #  Coins
+            x = random.randint(0, game_data['width'] - 1)
+            b_or_c = random.randint(0, 5)
+            if b_or_c == 5:
+                game_data['bomb_pos'] = {"x": x, "y": 19}
                 row += game_data['bomb']
-            # Coins
-            elif any(c['x'] == x and c['y'] == y and not c['collected'] for c in game_data['collectibles']):
-                row += game_data['coins']
             else:
-                row += game_data['empty']
+                game_data['collectibles'] = {"x": x, "y": 20, "collected": False}
+                row += game_data['coins']
+            # elif any(c['x'] == x and c['y'] == y and not c['collected'] for c in game_data['collectibles']):
+            #     row += game_data['coins']
+            # else:
+            #     row += game_data['empty']
 
         # only attempt to draw if the target row is within the visible area
         if y < max_y - 2:
@@ -114,23 +122,17 @@ def move_player(key):
     game_data['player']['y'] = new_y
 
     # collect coins
-    for c in game_data.get('collectibles', []):
-        if not c.get('collected') and c.get('x') == new_x and c.get('y') == new_y:
-            c['collected'] = True
-            game_data['player']['score'] += 1
+    # for c in game_data.get('collectibles', []):
+    #     if not c.get('collected') and c.get('x') == new_x and c.get('y') == new_y:
+    #         c['collected'] = True
+    #         game_data['player']['score'] += 1
 
     # bomb collision
     bp = game_data.get('bomb_pos', {})
     if bp.get('x') == new_x and bp.get('y') == new_y:
         game_data['player']['lives'] -= 1
 
-def bomb_and_coin_fall():
-    x = random.randint(0, game_data['width'] - 1)
-    b_or_c = random.randint(0, 5)
-    if b_or_c == 5:
-        game_data['bomb_pos'] = {"x": x, "y": 20}
-    else:
-        game_data['collectibles'] = {"x": x, "y": 20, "collected": False}
+# def bomb_and_coin_fall():
 
 def main(stdscr):
     curses.curs_set(0)
@@ -152,8 +154,8 @@ def main(stdscr):
             move_player(key)
             draw_board(stdscr)
         
-        if current_time % 3 == 0:
-            bomb_and_coin_fall()
-        current_time += 1
+        # if current_time % 3 == 0:
+        #     bomb_and_coin_fall()
+        # current_time += 1
 
 curses.wrapper(main)
