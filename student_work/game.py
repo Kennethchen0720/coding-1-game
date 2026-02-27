@@ -7,6 +7,7 @@ game_data = {
     'player': {"x":5, "y":10, "score":0, "lives":3},
     'bomb_pos': {"x":1,"y":1},
     'collectibles':[{"x": 10, "y": 5, "collected": False}],
+    'obstacles': [],
     'coins': "\U0001FA99",
     'bomb': "\U0001F4A3",
     'Basket': "\U0001F5D1",
@@ -57,7 +58,7 @@ def draw_board(stdscr):
                 row += game_data['empty']
 
         # only attempt to draw if the target row is within the visible area
-        if y < max_y:
+        if y < max_y - 2:
             try:
                 # use addnstr to avoid overflow if row is wider than the screen
                 stdscr.addnstr(y, 0, row, max_x, color_attr)
@@ -65,38 +66,62 @@ def draw_board(stdscr):
                 # if drawing still fails (e.g. cell width mismatch), just skip it
                 pass
 
-    stdscr.addstr(game_data['width'] + 1, 0,
-                  f"Coins Collected: {game_data['player']['score']}",
-                  curses.color_pair(1))
-    stdscr.addstr(game_data['width'] + 2, 0,
-                  "Move with A/D, Q to quit",
-                  curses.color_pair(1))
+    # draw status lines safely near the bottom of the screen
+    info_y = min(game_data['height'], max_y - 2)
+    try:
+        stdscr.addnstr(info_y, 0,
+                       f"Coins Collected: {game_data['player']['score']}",
+                       max_x, color_attr)
+    except curses.error:
+        pass
+    try:
+        stdscr.addnstr(info_y + 1, 0,
+                       "Move with A/D (or W/S), Q to quit",
+                       max_x, color_attr)
+    except curses.error:
+        pass
     stdscr.refresh()
-    stdscr.getkey()  # pause so player can see board
-
-curses.wrapper(draw_board)
 
 def move_player(key):
     x = game_data['player']['x']
-
-    new_x = x
+    y = game_data['player']['y']
+    new_x, new_y = x, y
     key = key.lower()
 
-
-    if key == "a" and x > 0:
+    if key == "a":
         new_x -= 1
-    elif key == "d" and x < game_data['width'] - 1:
+    elif key == "d":
         new_x += 1
+    elif key == "w":
+        new_y -= 1
+    elif key == "s":
+        new_y += 1
     else:
-        return  # Invalid key or move off board
-
-    # Check for obstacles
-    if any(o['x'] == new_x and o['y'] == new_y for o in game_data['obstacles']):
         return
 
-    # Update position and increment score
+    # bounds check
+    if not (0 <= new_x < game_data['width'] and 0 <= new_y < game_data['height']):
+        return
+
+    # Check for obstacles (safe access)
+    for o in game_data.get('obstacles', []):
+        if o.get('x') == new_x and o.get('y') == new_y:
+            return
+
+    # move player
     game_data['player']['x'] = new_x
-    game_data['player']['score'] += 1
+    game_data['player']['y'] = new_y
+
+    # collect coins
+    for c in game_data.get('collectibles', []):
+        if not c.get('collected') and c.get('x') == new_x and c.get('y') == new_y:
+            c['collected'] = True
+            game_data['player']['score'] += 1
+
+    # bomb collision
+    bp = game_data.get('bomb_pos', {})
+    if bp.get('x') == new_x and bp.get('y') == new_y:
+        game_data['player']['lives'] -= 1
 
 def main(stdscr):
     curses.curs_set(0)
@@ -107,7 +132,7 @@ def main(stdscr):
     while True:
         try:
             key = stdscr.getkey()
-        except:
+        except curses.error:
             key = None
 
         if key:
@@ -117,5 +142,6 @@ def main(stdscr):
             move_player(key)
             draw_board(stdscr)
 
-curses.wrapper(main)
+if __name__ == '__main__':
+    curses.wrapper(main)
 # Good Luck!
