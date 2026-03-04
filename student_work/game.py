@@ -1,4 +1,7 @@
 import curses
+import time
+import random
+
 
 game_data = {
     'width': 15,
@@ -12,6 +15,16 @@ game_data = {
     'Basket': "\U0001F5D1",
     'empty': "  "
 }
+
+
+def display_welcome_screen():
+    print(" ")
+    print("Welcome to Basket Catcher!")
+    print(" ")
+    print("Use A/D for movement")
+    print("Avoid the Bomb")
+    print("Collect Coins!")
+
 
 def draw_board(stdscr):
     curses.start_color()
@@ -91,6 +104,39 @@ def move_player(key):
     # move player
     game_data['player']['x'] = new_x
 
+
+def spawn_coin():
+    # Limit number of leaves on board
+    active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
+    if len(active_coins) >= 3:
+        return
+
+    if random.random() > 0.5:
+        return
+
+    while True:
+        x = random.randint(0, game_data['width'] - 1)
+        y = random.randint(0, game_data['height'] - 1)
+
+        # Must not spawn on player, eagle, rock, or existing leaf
+        if (x == game_data['player']["x"] and y == game_data['player']["y"]):
+            continue
+
+        if (x == game_data['bomb_pos']["x"] and y == game_data['bomb_pos']["y"]):
+            continue
+
+        if any(c["x"] == x and c["y"] == y and not c["collected"]
+               for c in game_data['collectibles']):
+            continue
+
+        # Valid location found
+        game_data['collectibles'].append({
+            "x": x,
+            "y": y,
+            "collected": False
+        })
+        break
+
     # collect coins
     for c in game_data.get('collectibles', []):
         if not c.get('collected') and c.get('x') == new_x :
@@ -101,6 +147,7 @@ def move_player(key):
     bp = game_data.get('bomb_pos', {})
     if bp.get('x') == new_x:
         game_data['player']['lives'] -= 1
+
 
 def main(stdscr):
     curses.curs_set(0)
@@ -121,5 +168,14 @@ def main(stdscr):
             move_player(key)
             draw_board(stdscr)
 
+
+
+    stdscr.clear()
+    stdscr.addstr(2, 2, "GAME OVER")
+    stdscr.addstr(3, 2, f"Final Score (Coin Collected): {game_data['player']['score']}")
+    stdscr.refresh()
+    time.sleep(3)
+
+display_welcome_screen()
+time.sleep(3.0)
 curses.wrapper(main)
-   
