@@ -5,11 +5,11 @@ import random
 
 
 game_data = {
-    'width': 15,
+    'width': 10,
     'height': 20,
-    'player': {"x":5, "y":10, "score":0, "lives":3},
-    'bomb_pos': {"x":1,"y":1}, #game_data['bomb_pos']["y"] get the y val  
-    'collectibles':[{"x": 10, "y": 5, "collected": False}],
+    'player': {"x":5, "y":10, "score":0, "lives":1},
+    'bombs': [{"x":1,"y":1}], # List of bombs, each with x, y
+    'collectibles':[{"x": 5, "y": 5, "collected": False}],
     'obstacles': [],
     'coins': "\U0001FA99",
     'bomb': "\U0001F4A3",
@@ -51,7 +51,7 @@ def draw_board(stdscr):
             if x == game_data['player']['x'] and y == game_data['player']['y']:
                 row += game_data['Basket']
             # Bomb
-            elif x == game_data['bomb_pos']['x'] and y == game_data['bomb_pos']['y']:
+            elif any(b['x'] == x and b['y'] == y for b in game_data['bombs']):
                 row += game_data['bomb']
             # Coins
             elif any(c['x'] == x and c['y'] == y and not c['collected'] for c in game_data['collectibles']):
@@ -105,58 +105,100 @@ def move_player(key):
     # move player
     game_data['player']['x'] = new_x
 
+    # Check for bomb collision
+    for b in game_data.get('bombs', []):
+        if b['x'] == game_data['player']['x'] and b['y'] == game_data['player']['y']:
+            game_data['player']['lives'] -= 1
 
-# def spawn_coin():
-#     # Limit number of leaves on board
-#     active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
-#     if len(active_coins) >= 3:
-#         return
-
-#     if random.random() > 0.5:
-#         return
-
-#     while True:
-#         x = random.randint(0, game_data['width'] - 1)
-#         y = random.randint(0, game_data['height'] - 1)
-
-#         # Must not spawn on player, eagle, rock, or existing leaf
-#         if (x == game_data['player']["x"] and y == game_data['player']["y"]):
-#             continue
-
-#         if (x == game_data['bomb_pos']["x"] and y == game_data['bomb_pos']["y"]):
-#             continue
-
-#         if any(c["x"] == x and c["y"] == y and not c["collected"]
-#                for c in game_data['collectibles']):
-#             continue
-
-#         # Valid location found
-#         game_data['collectibles'].append({
-#             "x": x,
-#             "y": y,
-#             "collected": False
-#         })
-#         break
-
-#     # collect coins
-#     for c in game_data.get('collectibles', []):
-#         if not c.get('collected') and c.get('x') == new_x :
-#             c['collected'] = True
-#             game_data['player']['score'] += 1
-
-#     # bomb collision
-#     bp = game_data.get('bomb_pos', {})
-#     if bp.get('x') == new_x:
-#         game_data['player']['lives'] -= 1
+    return True
 
 
-def c_and_b_fall():
+
+def update_game_objects():
+    # Move coins down
+    for c in game_data['collectibles']:
+        if not c['collected']:
+            c['y'] += 1
+            if c['y'] >= game_data['height']:
+                c['collected'] = True  # Remove coin when it falls off the board
+    
+    # Move bombs down
+    for b in game_data['bombs']:
+        b['y'] += 1
+        if b['y'] >= game_data['height']:
+            game_data['bombs'].remove(b)  # Remove bomb when it falls off
+    
+    # Check for collection at player's position
+    player_x = game_data['player']['x']
+    player_y = game_data['player']['y']
+    for c in game_data['collectibles']:
+        if not c['collected'] and c['x'] == player_x and c['y'] == player_y:
+            c['collected'] = True
+            game_data['player']['score'] += 1
 
 
-def c_and_b_add():
-   
 
-# Start both as daemon threads
+
+def spawn_bomb():
+    # Limit number of bombs on board
+    active_bombs = [b for b in game_data['bombs']]
+    if len(active_bombs) >= 2:
+        return
+
+    if random.random() > 0.4:  # Less frequent than coins
+        return
+
+    while True:
+        x = random.randint(0, game_data['width'] - 1)
+        y = 0  # Spawn at the top
+
+        # Must not spawn on player
+        if (x == game_data['player']["x"] and y == game_data['player']["y"]):
+            continue
+
+        # Valid location found
+        game_data['bombs'].append({
+            "x": x,
+            "y": y
+        })
+        break
+
+
+
+
+def spawn_coin():
+    # Limit number of coins on board
+    active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
+    if len(active_coins) >= 3:
+        return
+
+    if random.random() > 0.5:
+        return
+
+    while True:
+        x = random.randint(0, game_data['width'] - 1)
+        y = 0  # Spawn at the top
+
+        # Must not spawn on player or bomb
+        if (x == game_data['player']["x"] and y == game_data['player']["y"]):
+            continue
+
+        if any(b["x"] == x and b["y"] == y for b in game_data['bombs']):
+            continue
+
+        if any(c["x"] == x and c["y"] == y and not c["collected"]
+               for c in game_data['collectibles']):
+            continue
+
+        # Valid location found
+        game_data['collectibles'].append({
+            "x": x,
+            "y": y,
+            "collected": False
+        })
+        break
+
+
 
 
 def main(stdscr):
@@ -164,6 +206,8 @@ def main(stdscr):
     stdscr.nodelay(True)
 
     draw_board(stdscr)
+
+    frame_count = 0
 
     while True:
         try:
@@ -177,10 +221,17 @@ def main(stdscr):
                 break
 
             move_player(key)
+
+
+        # Update game objects every few frames
+        if frame_count % 5 == 0:
+            update_game_objects()
+            spawn_bomb()
+            spawn_coin()
+
         draw_board(stdscr)
-        c_and_b_fall()
-        c_and_b_add()
-        time.sleep(0.05) 
+        time.sleep(0.05)
+        frame_count += 1 
 
 
 
