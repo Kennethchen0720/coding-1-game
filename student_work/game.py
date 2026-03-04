@@ -148,21 +148,4 @@ def main(stdscr):
     draw_board(stdscr)
     current_time = 0
 
-    while True:
-        try:
-            key = stdscr.getkey()
-        except curses.error:
-            key = None
-
-        if key:
-            if key.lower() == "q":
-                break
-
-            move_player(key)
-            draw_board(stdscr)
-        
-        # if current_time % 3 == 0:
-        #     bomb_and_coin_fall()
-        # current_time += 1
-
-curses.wrapper(main)
+   
