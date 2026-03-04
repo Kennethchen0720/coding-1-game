@@ -23,6 +23,8 @@ def display_welcome_screen():
     print("Use AD for movement")
     print("Avoid the Bomb")
     print("Collect Coins!")
+
+
 def draw_board(stdscr):
     curses.start_color()
     color_attr = curses.A_NORMAL
@@ -44,21 +46,21 @@ def draw_board(stdscr):
             if x == game_data['player']['x'] and y == game_data['player']['y']:
                 row += game_data['Basket']
             # Bomb
-            # elif x == game_data['bomb_pos']['x'] and y == game_data['bomb_pos']['y']:
-            #     row += game_data['bomb']
+            elif x == game_data['bomb_pos']['x'] and y == game_data['bomb_pos']['y']:
+                row += game_data['bomb']
             #  Coins
             x = random.randint(0, game_data['width'] - 1)
             b_or_c = random.randint(0, 5)
             if b_or_c == 5:
                 game_data['bomb_pos'] = {"x": x, "y": 19}
                 row += game_data['bomb']
-            else:
+            elif:
                 game_data['collectibles'] = {"x": x, "y": 20, "collected": False}
                 row += game_data['coins']
-            # elif any(c['x'] == x and c['y'] == y and not c['collected'] for c in game_data['collectibles']):
-            #     row += game_data['coins']
-            # else:
-            #     row += game_data['empty']
+            elif any(c['x'] == x and c['y'] == y and not c['collected'] for c in game_data['collectibles']):
+                row += game_data['coins']
+            else:
+                row += game_data['empty']
         if y < max_y - 2:
             try:
                 stdscr.addnstr(y, 0, row, max_x, color_attr)
@@ -107,11 +109,11 @@ def move_player(key):
     game_data['player']['x'] = new_x
     game_data['player']['y'] = new_y
 
-    # collect coins
-    # for c in game_data.get('collectibles', []):
-    #     if not c.get('collected') and c.get('x') == new_x and c.get('y') == new_y:
-    #         c['collected'] = True
-    #         game_data['player']['score'] += 1
+    collect coins
+    for c in game_data.get('collectibles', []):
+        if not c.get('collected') and c.get('x') == new_x and c.get('y') == new_y:
+            c['collected'] = True
+            game_data['player']['score'] += 1
 
     # bomb collision
     bp = game_data.get('bomb_pos', {})
