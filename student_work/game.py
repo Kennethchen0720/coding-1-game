@@ -1,5 +1,6 @@
-import curses
+import threading
 import time
+import curses
 import random
 
 
@@ -7,7 +8,7 @@ game_data = {
     'width': 15,
     'height': 20,
     'player': {"x":5, "y":10, "score":0, "lives":3},
-    'bomb_pos': {"x":1,"y":1},
+    'bomb_pos': {"x":1,"y":1}, #game_data['bomb_pos']["y"] get the y val  
     'collectibles':[{"x": 10, "y": 5, "collected": False}],
     'obstacles': [],
     'coins': "\U0001FA99",
@@ -105,48 +106,57 @@ def move_player(key):
     game_data['player']['x'] = new_x
 
 
-def spawn_coin():
-    # Limit number of leaves on board
-    active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
-    if len(active_coins) >= 3:
-        return
+# def spawn_coin():
+#     # Limit number of leaves on board
+#     active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
+#     if len(active_coins) >= 3:
+#         return
 
-    if random.random() > 0.5:
-        return
+#     if random.random() > 0.5:
+#         return
 
-    while True:
-        x = random.randint(0, game_data['width'] - 1)
-        y = random.randint(0, game_data['height'] - 1)
+#     while True:
+#         x = random.randint(0, game_data['width'] - 1)
+#         y = random.randint(0, game_data['height'] - 1)
 
-        # Must not spawn on player, eagle, rock, or existing leaf
-        if (x == game_data['player']["x"] and y == game_data['player']["y"]):
-            continue
+#         # Must not spawn on player, eagle, rock, or existing leaf
+#         if (x == game_data['player']["x"] and y == game_data['player']["y"]):
+#             continue
 
-        if (x == game_data['bomb_pos']["x"] and y == game_data['bomb_pos']["y"]):
-            continue
+#         if (x == game_data['bomb_pos']["x"] and y == game_data['bomb_pos']["y"]):
+#             continue
 
-        if any(c["x"] == x and c["y"] == y and not c["collected"]
-               for c in game_data['collectibles']):
-            continue
+#         if any(c["x"] == x and c["y"] == y and not c["collected"]
+#                for c in game_data['collectibles']):
+#             continue
 
-        # Valid location found
-        game_data['collectibles'].append({
-            "x": x,
-            "y": y,
-            "collected": False
-        })
-        break
+#         # Valid location found
+#         game_data['collectibles'].append({
+#             "x": x,
+#             "y": y,
+#             "collected": False
+#         })
+#         break
 
-    # collect coins
-    for c in game_data.get('collectibles', []):
-        if not c.get('collected') and c.get('x') == new_x :
-            c['collected'] = True
-            game_data['player']['score'] += 1
+#     # collect coins
+#     for c in game_data.get('collectibles', []):
+#         if not c.get('collected') and c.get('x') == new_x :
+#             c['collected'] = True
+#             game_data['player']['score'] += 1
 
-    # bomb collision
-    bp = game_data.get('bomb_pos', {})
-    if bp.get('x') == new_x:
-        game_data['player']['lives'] -= 1
+#     # bomb collision
+#     bp = game_data.get('bomb_pos', {})
+#     if bp.get('x') == new_x:
+#         game_data['player']['lives'] -= 1
+
+
+def c_and_b_fall():
+
+
+def c_and_b_add():
+   
+
+# Start both as daemon threads
 
 
 def main(stdscr):
@@ -161,12 +171,16 @@ def main(stdscr):
         except curses.error:
             key = None
 
+
         if key:
             if key.lower() == "q":
                 break
 
             move_player(key)
-            draw_board(stdscr)
+        draw_board(stdscr)
+        c_and_b_fall()
+        c_and_b_add()
+        time.sleep(0.05) 
 
 
 
