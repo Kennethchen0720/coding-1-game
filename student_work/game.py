@@ -16,6 +16,13 @@ game_data = {
     'empty': "  "
 }
 
+def display_welcome_screen():
+    print(" ")
+    print("Welcome to Basket Catcher!")
+    print(" ")
+    print("Use AD for movement")
+    print("Avoid the Bomb")
+    print("Collect Coins!")
 def draw_board(stdscr):
     
     # Print the board and all game elements using curses
