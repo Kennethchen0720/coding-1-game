@@ -1,8 +1,8 @@
 import curses
 
 game_data = {
-    'width': 40,
-    'height': 40,
+    'width': 15,
+    'height': 20,
     'player': {"x":5, "y":10, "score":0, "lives":3},
     'bomb_pos': {"x":1,"y":1},
     'collectibles':[{"x": 10, "y": 5, "collected": False}],
@@ -14,15 +14,8 @@ game_data = {
 }
 
 def draw_board(stdscr):
-    
-    # Print the board and all game elements using curses
     curses.start_color()
 
-    # Make sure the terminal actually supports colors before trying to use them.  In a
-    # few minimal environments (some CI containers, Windows without a proper terminal,
-    # etc.) the curses color APIs raise "color matching" or "color number out of range"
-    # errors.  Guard against that by falling back to A_NORMAL if colors aren't
-    # available or initialization fails.
     color_attr = curses.A_NORMAL
     if curses.has_colors():
         try:
@@ -30,15 +23,11 @@ def draw_board(stdscr):
             curses.init_pair(1, curses.COLOR_BLACK, -1)
             color_attr = curses.color_pair(1)
         except curses.error:
-            # If the terminal doesn't like the -1 default background or the pair
-            # number we chose, just continue with the default attributes.  The game
-            # will still display.
             color_attr = curses.A_NORMAL
 
     stdscr.clear()
 
-    # determine how much space we actually have; curses will return ERR if we
-    # try to draw outside the window (which is what happened in the screenshot).
+
     max_y, max_x = stdscr.getmaxyx()
 
     for y in range(game_data['height']):
@@ -56,16 +45,13 @@ def draw_board(stdscr):
             else:
                 row += game_data['empty']
 
-        # only attempt to draw if the target row is within the visible area
         if y < max_y - 2:
             try:
-                # use addnstr to avoid overflow if row is wider than the screen
                 stdscr.addnstr(y, 0, row, max_x, color_attr)
             except curses.error:
-                # if drawing still fails (e.g. cell width mismatch), just skip it
                 pass
 
-    # draw status lines safely near the bottom of the screen
+
     info_y = min(game_data['height'], max_y - 2)
     try:
         stdscr.addnstr(info_y, 0,
@@ -75,7 +61,7 @@ def draw_board(stdscr):
         pass
     try:
         stdscr.addnstr(info_y + 1, 0,
-                       "Move with A/D (or W/S), Q to quit",
+                       "Move with A/D Q to quit",
                        max_x, color_attr)
     except curses.error:
         pass
@@ -83,43 +69,37 @@ def draw_board(stdscr):
 
 def move_player(key):
     x = game_data['player']['x']
-    y = game_data['player']['y']
-    new_x, new_y = x, y
+    new_x = x
     key = key.lower()
 
     if key == "a":
         new_x -= 1
     elif key == "d":
         new_x += 1
-    elif key == "w":
-        new_y -= 1
-    elif key == "s":
-        new_y += 1
     else:
         return
 
     # bounds check
-    if not (0 <= new_x < game_data['width'] and 0 <= new_y < game_data['height']):
+    if not (0 <= new_x < game_data['width']):
         return
 
     # Check for obstacles (safe access)
     for o in game_data.get('obstacles', []):
-        if o.get('x') == new_x and o.get('y') == new_y:
+        if o.get('x') == new_x:
             return
 
     # move player
     game_data['player']['x'] = new_x
-    game_data['player']['y'] = new_y
 
     # collect coins
     for c in game_data.get('collectibles', []):
-        if not c.get('collected') and c.get('x') == new_x and c.get('y') == new_y:
+        if not c.get('collected') and c.get('x') == new_x :
             c['collected'] = True
             game_data['player']['score'] += 1
 
     # bomb collision
     bp = game_data.get('bomb_pos', {})
-    if bp.get('x') == new_x and bp.get('y') == new_y:
+    if bp.get('x') == new_x:
         game_data['player']['lives'] -= 1
 
 def main(stdscr):
@@ -141,6 +121,5 @@ def main(stdscr):
             move_player(key)
             draw_board(stdscr)
 
-if __name__ == '__main__':
-    curses.wrapper(main)
+curses.wrapper(main)
    
