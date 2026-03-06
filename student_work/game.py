@@ -75,7 +75,7 @@ def draw_board(stdscr):
         pass
     try:
         stdscr.addnstr(info_y + 1, 0,
-                       "Move with A/D Q to quit",
+                       f"Lives Remaining: {game_data['player']['lives']}",
                        max_x, color_attr)
     except curses.error:
         pass
@@ -142,10 +142,10 @@ def update_game_objects():
 def spawn_bomb():
     # Limit number of bombs on board
     active_bombs = [b for b in game_data['bombs']]
-    if len(active_bombs) >= 2:
+    if len(active_bombs) >= 5:
         return
 
-    if random.random() > 0.4:  # Less frequent than coins
+    if random.random() > 0.8:  # Less frequent than coins
         return
 
     while True:
