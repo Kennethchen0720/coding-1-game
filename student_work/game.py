@@ -13,7 +13,9 @@ game_data = {
     'coins': "\U0001FA99",
     'bomb': "\U0001F4A3",
     'Basket': "\U0001F5D1",
-    'empty': "  "
+    'empty': "  ",
+    'bomb_timer': 0,
+    'coin_timer': 0
 }
 #this is what you would see in the start menu
 def display_welcome_screen():
@@ -31,7 +33,7 @@ def draw_board(stdscr):
     if curses.has_colors():
         try:
             curses.use_default_colors()
-            curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLUE)
+            curses.init_pair(1, curses.COLOR_BLACK, - 1)
             color_attr = curses.color_pair(1)
         except curses.error:
             color_attr = curses.A_NORMAL
@@ -140,62 +142,70 @@ def update_game_objects():
          # Remove bomb on collision
 
 def spawn_bomb():
-    if random.random() > 0.5:  #20% spawn bomb
+    game_data['bomb_timer'] += 1
+    if game_data['bomb_timer'] % 2 == 0:  # Spawn bomb every 5 frames
+        if random.random() > 0.5:  #20% spawn bomb
+            return
+
+        # Limit number of bombs on board
+        active_bombs = [b for b in game_data['bombs']]
+        if len(active_bombs) >= random.randint(1, 6):
+            return
+
+
+        while True:
+            x = random.randint(0, game_data['width'] - 1)
+            y = 0  # Spawn at the top
+
+            # Must not spawn on player
+            if (x == game_data['player']["x"] and y == game_data['player']["y"]):
+                continue
+
+            # Valid location found
+            game_data['bombs'].append({
+                "x": x,
+                "y": y
+            })
+            break
+    else:
         return
-
-    # Limit number of bombs on board
-    active_bombs = [b for b in game_data['bombs']]
-    if len(active_bombs) >= random.randint(1, 6):
-        return
-
-
-    while True:
-        x = random.randint(0, game_data['width'] - 1)
-        y = 0  # Spawn at the top
-
-        # Must not spawn on player
-        if (x == game_data['player']["x"] and y == game_data['player']["y"]):
-            continue
-
-        # Valid location found
-        game_data['bombs'].append({
-            "x": x,
-            "y": y
-        })
-        break
 
 def spawn_coin():
-    if random.random() > 0.8: #80% spawn coin
+    game_data['coin_timer'] += 1
+    if game_data['coin_timer'] % 2 == 0:  # Spawn coin
+        if random.random() > 0.8: #80% spawn coin
+            return
+
+        # Limit number of coins on board
+        active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
+        if len(active_coins) >= random.randint(1, 9):
+            return
+
+
+        while True:
+            x = random.randint(0, game_data['width'] - 1)
+            y = 0  # Spawn at the top
+
+            # Must not spawn on player or bomb
+            if (x == game_data['player']["x"] and y == game_data['player']["y"]):
+                continue
+
+            if any(b["x"] == x and b["y"] == y for b in game_data['bombs']):
+                continue
+
+            if any(c["x"] == x and c["y"] == y and not c["collected"]
+                for c in game_data['collectibles']):
+                continue
+
+            # Valid location found
+            game_data['collectibles'].append({
+                "x": x,
+                "y": y,
+                "collected": False
+            })
+            break
+    else:
         return
-
-    # Limit number of coins on board
-    active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
-    if len(active_coins) >= random.randint(1, 9):
-        return
-
-
-    while True:
-        x = random.randint(0, game_data['width'] - 1)
-        y = 0  # Spawn at the top
-
-        # Must not spawn on player or bomb
-        if (x == game_data['player']["x"] and y == game_data['player']["y"]):
-            continue
-
-        if any(b["x"] == x and b["y"] == y for b in game_data['bombs']):
-            continue
-
-        if any(c["x"] == x and c["y"] == y and not c["collected"]
-               for c in game_data['collectibles']):
-            continue
-
-        # Valid location found
-        game_data['collectibles'].append({
-            "x": x,
-            "y": y,
-            "collected": False
-        })
-        break
 
 def main(stdscr):
     curses.curs_set(0)
