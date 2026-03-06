@@ -34,7 +34,7 @@ def draw_board(stdscr):
     if curses.has_colors():
         try:
             curses.use_default_colors()
-            curses.init_pair(1, curses.COLOR_BLACK, -1)
+            curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_BLUE)
             color_attr = curses.color_pair(1)
         except curses.error:
             color_attr = curses.A_NORMAL
@@ -238,7 +238,7 @@ def main(stdscr):
 
 
         # Update game objects every few frames
-        if frame_count % 5 == 0:
+        if frame_count % 4 == 0:
             update_game_objects()
             spawn_bomb()
             spawn_coin()
