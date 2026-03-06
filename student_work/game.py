@@ -33,11 +33,7 @@ def draw_board(stdscr):
     if curses.has_colors():
         try:
             curses.use_default_colors()
-<<<<<<< HEAD
             curses.init_pair(1, curses.COLOR_BLACK, - 1)
-=======
-            curses.init_pair(1, curses.COLOR_BLUE , -1)
->>>>>>> d1934b6 (geththr)
             color_attr = curses.color_pair(1)
         except curses.error:
             color_attr = curses.A_NORMAL
