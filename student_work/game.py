@@ -7,7 +7,7 @@ import random
 game_data = {
     'width': 10,
     'height': 20,
-    'player': {"x":5, "y":10, "score":0, "lives":1},
+    'player': {"x":5, "y":10, "score":0, "lives":2},
     'bombs': [{"x":1,"y":1}], # List of bombs, each with x, y
     'collectibles':[{"x": 5, "y": 5, "collected": False}],
     'obstacles': [],
