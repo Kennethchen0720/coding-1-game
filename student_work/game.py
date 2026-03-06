@@ -149,7 +149,7 @@ def update_game_objects():
 
 
 def spawn_bomb():
-    if random.random() > 0.2:  #20% spawn bomb
+    if random.random() > 0.5:  #20% spawn bomb
         return
 
     # Limit number of bombs on board
