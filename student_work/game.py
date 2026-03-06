@@ -3,7 +3,6 @@ import time
 import curses
 import random
 
-
 game_data = {
     'width': 10,
     'height': 20,
@@ -16,7 +15,6 @@ game_data = {
     'Basket': "\U0001F5D1",
     'empty': "  "
 }
-
 #this is what you would see in the start menu
 def display_welcome_screen():
     print(" ")
@@ -25,7 +23,6 @@ def display_welcome_screen():
     print("Use A/D for movement")
     print("Avoid the Bomb")
     print("Collect Coins!")
-
 
 def draw_board(stdscr):
     curses.start_color()
@@ -83,7 +80,6 @@ def draw_board(stdscr):
     except curses.error:
         pass
     stdscr.refresh()
-
 #This is how you would move the player left and right using the A and D keys
 def move_player(key):
     x = game_data['player']['x']
@@ -116,8 +112,6 @@ def move_player(key):
 
     return True
 
-
-
 def update_game_objects():
     # Move coins down
     for c in game_data['collectibles']:
@@ -145,9 +139,6 @@ def update_game_objects():
             game_data['bombs'].remove(b) 
          # Remove bomb on collision
 
-
-
-
 def spawn_bomb():
     if random.random() > 0.5:  #20% spawn bomb
         return
@@ -172,9 +163,6 @@ def spawn_bomb():
             "y": y
         })
         break
-
-
-
 
 def spawn_coin():
     if random.random() > 0.8: #80% spawn coin
@@ -209,9 +197,6 @@ def spawn_coin():
         })
         break
 
-
-
-
 def main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(True)
@@ -226,13 +211,13 @@ def main(stdscr):
         except curses.error:
             key = None
 
-#If you want to quit than press q to be in the end screen
+    #If you want to quit than press q to be in the end screen
         if key:
             if key.lower() == "q":
                 break
 
             move_player(key)
-#If you lose all your lives than the game will end and you will be in the end screen
+    #If you lose all your lives than the game will end and you will be in the end screen
         if len(game_data['bombs']) > 0 and game_data['player']['lives'] <= 0:
             break
 
