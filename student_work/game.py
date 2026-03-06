@@ -17,7 +17,7 @@ game_data = {
     'empty': "  "
 }
 
-
+#this is what you would see in the start menu
 def display_welcome_screen():
     print(" ")
     print("Welcome to Basket Catcher!")
@@ -67,6 +67,9 @@ def draw_board(stdscr):
 
 
     info_y = min(game_data['height'], max_y - 2)
+
+
+    #Display score and lives
     try:
         stdscr.addnstr(info_y, 0,
                        f"Coins Collected: {game_data['player']['score']}",
@@ -81,6 +84,7 @@ def draw_board(stdscr):
         pass
     stdscr.refresh()
 
+#This is how you would move the player left and right using the A and D keys
 def move_player(key):
     x = game_data['player']['x']
     new_x = x
@@ -93,7 +97,7 @@ def move_player(key):
     else:
         return
 
-    # bounds check
+    # bounds check so you won't go off the board
     if not (0 <= new_x < game_data['width']):
         return
 
@@ -135,18 +139,24 @@ def update_game_objects():
         if not c['collected'] and c['x'] == player_x and c['y'] == player_y:
             c['collected'] = True
             game_data['player']['score'] += 1
+    for b in game_data['bombs']:
+        if b['x'] == player_x and b['y'] == player_y:
+            game_data['player']['lives'] -= 1
+            game_data['bombs'].remove(b) 
+         # Remove bomb on collision
 
 
 
 
 def spawn_bomb():
-    # Limit number of bombs on board
-    active_bombs = [b for b in game_data['bombs']]
-    if len(active_bombs) >= 5:
+    if random.random() > 0.2:  #20% spawn bomb
         return
 
-    if random.random() > 0.8:  # Less frequent than coins
+    # Limit number of bombs on board
+    active_bombs = [b for b in game_data['bombs']]
+    if len(active_bombs) >= random.randint(1, 6):
         return
+
 
     while True:
         x = random.randint(0, game_data['width'] - 1)
@@ -167,13 +177,14 @@ def spawn_bomb():
 
 
 def spawn_coin():
-    # Limit number of coins on board
-    active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
-    if len(active_coins) >= 3:
+    if random.random() > 0.8: #80% spawn coin
         return
 
-    if random.random() > 0.5:
+    # Limit number of coins on board
+    active_coins = [c for c in game_data['collectibles'] if not c["collected"]]
+    if len(active_coins) >= random.randint(1, 9):
         return
+
 
     while True:
         x = random.randint(0, game_data['width'] - 1)
@@ -215,12 +226,15 @@ def main(stdscr):
         except curses.error:
             key = None
 
-
+#If you want to quit than press q to be in the end screen
         if key:
             if key.lower() == "q":
                 break
 
             move_player(key)
+#If you lose all your lives than the game will end and you will be in the end screen
+        if len(game_data['bombs']) > 0 and game_data['player']['lives'] <= 0:
+            break
 
 
         # Update game objects every few frames
