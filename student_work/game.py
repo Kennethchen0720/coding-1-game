@@ -10,9 +10,9 @@ game_data = {
     'bombs': [{"x":1,"y":1}], # List of bombs, each with x, y
     'collectibles':[{"x": 5, "y": 5, "collected": False}],
     'obstacles': [],
-    'coins': "\U0001FA99",
+    'coins': "\U0001FA99 ",
     'bomb': "\U0001F4A3",
-    'Basket': "\U0001F5D1",
+    'Basket': "\U0001F5D1 ",
     'empty': "  ",
     'bomb_timer': 0,
     'coin_timer': 0
@@ -144,7 +144,7 @@ def update_game_objects():
 def spawn_bomb():
     game_data['bomb_timer'] += 1
     if game_data['bomb_timer'] % 2 == 0:  # Spawn bomb every 5 frames
-        if random.random() > 0.5:  #20% spawn bomb
+        if random.random() > 0.7:  #70% spawn bomb
             return
 
         # Limit number of bombs on board
@@ -233,10 +233,12 @@ def main(stdscr):
 
 
         # Update game objects every few frames
-        if frame_count % 4 == 0:
+        if frame_count % 3 == 0:
             update_game_objects()
             spawn_bomb()
             spawn_coin()
+
+        
 
         draw_board(stdscr)
         time.sleep(0.05)
