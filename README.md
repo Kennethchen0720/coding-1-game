@@ -7,7 +7,7 @@ When you finish, add your video link here and submit one link to your project re
 
 In this project, you will design and build a video game.  I recommend that you design a game like; snake, frogger, or pacman, but your game choice is up to you.  We will use github to manage our work and collaborate, and we will also use the curses library to enhance our terminal to simulate a video game console.  To get started, follow the link below to fork the project repository, be sure to take a look at the example project as well.
 
-#### [Please Fork this Repo to begin](https://github.com/rlj0713/coding-1-game/fork)
+#### [Please Fork this Rerepo to begin](https://github.com/rlj0713/coding-1-game/fork)
 ---
 
 ## Project Requirements:
